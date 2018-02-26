@@ -11,9 +11,11 @@ class CANsocket(object):
 
     def receive(self):
         pkg = self.s.recv(64)
+        can_funcid = pkg[8]
+        can_status = pkg[9]
         can_id, length, data = struct.unpack('<IB3x8s', pkg)
         can_id &= socket.CAN_EFF_MASK
-        return(can_id, data[:length-8])
+        return(can_id, can_funcid, can_status, data[:length])
 
 
 def listen(args):
@@ -25,9 +27,12 @@ def listen(args):
 
     print("Start listening on {}..\n".format(args.interface))
     while True:
-        can_id, data = sock.receive()
-        cbor_pkg = loads(data)
-        print(cbor_pkg)
+        can_id, func_id, status, data = sock.receive()
+        if status >= 0x80:
+            print("Error receiving package from ID {}. Error code: {}".format(can_id, hex(status)))
+            continue
+        cbor_pkg = loads(data[2:])
+        print("Message from ID {} -> 0: {}".format(can_id, cbor_pkg))
 
 def parse_if():
     parser = argparse.ArgumentParser(description="Listen on CAN interface for messages and decode CBOR to ASCII")

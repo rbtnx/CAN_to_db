@@ -31,3 +31,19 @@ deactivate
 python cantodb.py vcan0
 ```
 You should see decoded cbor data
+
+### send dummy data via cansend to test:
+``` shell
+cansend vcan0 014#8000FA3FF33333
+cansend vcan0 014#8000820C16
+cansend vcan0 014#8000C48221196AB3
+cansend vcan0 014#8080C48221196AB3
+```
+
+The output should look like this:
+``` shell
+Message from ID 20 -> 0: 1.899999976158142
+Message from ID 20 -> 0: [12, 22]
+Message from ID 20 -> 0: 273.15
+Error receiving package from ID 20. Error code: 0x80
+```
