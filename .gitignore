@@ -1,6 +1,5 @@
 # Python virtualenv stuff
-.foxbot2/
-.foxbotenv/
+.cantodb/
 .env
 
 # Byte-compiled / optimized / DLL files
